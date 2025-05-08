@@ -17,6 +17,9 @@ public class StageManager : MonoBehaviour
     [SerializeField] private int currentStage = 1;
     private GameObject currentRoom;
 
+    // enemy 관리
+    private EnemyManager enemyManager;
+
     // 초기화
     public void Init()
     {
@@ -33,7 +36,7 @@ public class StageManager : MonoBehaviour
     public void LoadRoom(int stage)
     {
         // 플레이어 위치 초기화
-        playerTransform.position = Vector3.zero;
+        playerTransform.position = Vector3.down;
 
         // 이전 방이 있었다면 풀에 반환
         if (currentRoom != null)
@@ -49,14 +52,34 @@ public class StageManager : MonoBehaviour
         currentRoom.transform.position = Vector3.zero;
         currentRoom.transform.SetParent(mapParent);
 
-        // enemy에게 현재 스테이지 정보 전달
-        //foreach(var enemy in currentRoom.GetComponentInChildren<EnemyController>())
-        //{
-        //    enemy.Init(stage);
-        //}
+        // enemy 스폰을 위한 스폰 포인트 찾기
+        Transform spawnRoot = currentRoom.transform.Find("SpawnPoints");
 
-        // 포탈 비활성화
-        portal.gameObject.SetActive(false);
+        if(spawnRoot != null)
+        {
+            List<Transform> spawnPoints = new();
+
+            foreach (Transform point in spawnRoot)
+                spawnPoints.Add(point);
+
+            // enemy 스폰 요청
+            // EnemyManager가 풀링 시스템을 통해 적 생성
+            // enemyManager.SpawnEnemies(spawnPoints, stage)
+        }
+
+        else
+        {
+            Debug.LogWarning("SpawnPoints가 없습니다.");
+        }
+
+            // enemy에게 현재 스테이지 정보 전달
+            //foreach(var enemy in currentRoom.GetComponentInChildren<EnemyController>())
+            //{
+            //    enemy.Init(stage);
+            //}
+
+            // 포탈 비활성화
+            portal.gameObject.SetActive(false);
 
         // 클리어 조건 감시 시작
         StartCoroutine(CheckRoomClear());
@@ -65,6 +88,7 @@ public class StageManager : MonoBehaviour
         portal.OnPlayerEnterPortal = NextStage;
     }
 
+    // 1초마다 Enemy가 모두 사라졌는지 감시하는 코루틴
     private IEnumerator CheckRoomClear()
     {
         while(true)

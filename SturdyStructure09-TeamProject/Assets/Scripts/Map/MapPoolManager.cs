@@ -50,12 +50,12 @@ public class MapPoolManager : MonoBehaviour
         room.SetActive(false);
         room.transform.SetParent(transform);
 
-        // 내부 EnemyController는 제거(풀링x)
-        foreach(Transform child in room.transform)
-        {
-            if (child.TryGetComponent<EnemyController>(out var enemy))
-                Destroy(child.gameObject);
-        }
+        //// 내부 EnemyController는 제거(풀링x)
+        //foreach(Transform child in room.transform)
+        //{
+        //    if (child.TryGetComponent<EnemyController>(out var enemy))
+        //        Destroy(child.gameObject);
+        //}
 
         // 반환할 프리팹 큐에 넣음
         GameObject prefab = FindMatchingPrefab(room);
