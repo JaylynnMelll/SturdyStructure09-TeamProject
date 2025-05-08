@@ -18,6 +18,9 @@ public class ResourceController : MonoBehaviour
     public float CurrentHealth { get; private set; }
     public float MaxHealth => statHandler.Health;
 
+    private SlimeBossController slimeBossController;
+    private EnemyController enemyController;
+
     private void Awake()
     {
         baseController = GetComponent<BaseController>();
@@ -40,6 +43,13 @@ public class ResourceController : MonoBehaviour
                 animationHandler.InvinvibilityEnd();
             }
         }
+    }
+
+    // 보스몬스터 체력 초기화 위해 추가
+    public void SetHealth(float value)
+    {
+        CurrentHealth = Mathf.Clamp(value, 0, MaxHealth);
+        OnChangeHealth?.Invoke(CurrentHealth, MaxHealth);
     }
 
     public bool ChangeHealth (float change)
@@ -84,7 +94,14 @@ public class ResourceController : MonoBehaviour
 
     private void Died()
     {
-        baseController.Died();
+        if(slimeBossController != null)
+        {
+            slimeBossController.Died();
+        }
+        else if (enemyController != null)
+        {
+            baseController?.Died();
+        }
     }
 }
 
