@@ -50,10 +50,15 @@ public class UIManager : MonoBehaviour
         gameUI.UpdateHPSlider(currentHP / maxHP);
     }
 
-    //     public void ChangePlayerEXP(float currentEXP, float maxEXP)
-    // {
-    //     gameUI.UpdateEXPSlider(currentEXP / maxEXP);
-    // }
+    public void ChangePlayerExp(float currentExp, float maxExp)
+    {
+        gameUI.UpdateExpSlider(currentExp / maxExp);
+    }
+
+    public void ChangePlayerLevel(int level)
+    {
+        gameUI.UpdateLevel(level);
+    }
 
     public void ChangeState(UIState state)
     {

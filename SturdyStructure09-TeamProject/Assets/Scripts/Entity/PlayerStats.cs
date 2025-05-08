@@ -6,8 +6,10 @@ public class PlayerStats : MonoBehaviour
 {
     public static PlayerStats Instance;
 
-    public int Gold {  get; private set; }
+    public int Gold { get; private set; }
     public int Exp { get; private set; }
+    public int MaxExp { get; private set; } = 30;
+    public int Level { get; private set; } = 1;
 
     private void Awake()
     {
@@ -17,12 +19,22 @@ public class PlayerStats : MonoBehaviour
     public void AddGold(int amount)
     {
         Gold += amount;
-        Debug.Log($"골드 + {amount}, 현재 : {Gold}");
     }
 
     public void AddExp(int amount)
     {
         Exp += amount;
-        Debug.Log($"경험치 + {amount}, 현재 : {Exp}");
+        GameManager.instance.UpdateExp();
+        CheckLevelUp();
+    }
+    private void CheckLevelUp()
+    {
+        if (Exp >= MaxExp)
+        {
+            Exp -= MaxExp;
+            Level++;
+            MaxExp = Mathf.RoundToInt(MaxExp * 1.25f);
+            GameManager.instance.UpdateExp();
+        }
     }
 }

@@ -51,8 +51,20 @@ public class GameManager : MonoBehaviour
     void StartNextWave()
     {
         currentWaveIndex += 1;
+        // uiManager.ChangeWave(currentWaveIndex);
         enemyManager.StartWave(1 + currentWaveIndex / 5);
-        uiManager.ChangeWave(currentWaveIndex);
+    }
+
+    public void UpdateExp()
+    {
+        var stats = PlayerStats.Instance;
+        uiManager.ChangePlayerExp(stats.Exp, stats.MaxExp);
+        uiManager.ChangePlayerLevel(stats.Level);
+    }
+
+    public void UpdateGold()
+    {
+        // 
     }
 
     public void EndOfWave()
