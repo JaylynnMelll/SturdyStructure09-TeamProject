@@ -131,6 +131,15 @@ public class BaseController : MonoBehaviour
 
     public virtual void Died()
     {
+        if (this is EnemyController)
+        {
+            if (PlayerStats.Instance != null && statHandler != null)
+            {
+                PlayerStats.Instance.AddGold(statHandler.RewardGold);
+                PlayerStats.Instance.AddExp(statHandler.RewardExp);
+            }
+        }
+
         _rigidbody.velocity = Vector3.zero;
 
         foreach (SpriteRenderer renderer in transform.GetComponentsInChildren<SpriteRenderer>())
