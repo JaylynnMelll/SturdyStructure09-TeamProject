@@ -3073,6 +3073,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 10
   speed: 2
+  rewardGold: 10
+  rewardExp: 5
 --- !u!114 &610771944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15564,6 +15566,7 @@ GameObject:
   - component: {fileID: 1509543278}
   - component: {fileID: 1509543279}
   - component: {fileID: 1509543280}
+  - component: {fileID: 1509543281}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -15702,6 +15705,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 10
   speed: 3
+  rewardGold: 10
+  rewardExp: 5
 --- !u!114 &1509543279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15746,6 +15751,18 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1509543281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509543272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 400a8badd83c44c45b22ac04ff2a2288, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1718647168
 GameObject:
   m_ObjectHideFlags: 0
