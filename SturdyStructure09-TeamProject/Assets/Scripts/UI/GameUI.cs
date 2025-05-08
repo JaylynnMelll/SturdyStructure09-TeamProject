@@ -9,6 +9,7 @@ public class GameUI : BaseUI
 {
     [SerializeField] public TextMeshProUGUI waveText;
     [SerializeField] public Slider hpSlider;
+    // [SerializeField] public Slider expSlider;
 
     private void Start()
     {
@@ -19,6 +20,11 @@ public class GameUI : BaseUI
     {
         hpSlider.value = percentage;
     }
+
+    // public void UpdateEXPSlider(float percentage)
+    // {
+    //     expSlider.value = percentage;
+    // }
 
     public void UpdateWaveText(int wave)
     {
