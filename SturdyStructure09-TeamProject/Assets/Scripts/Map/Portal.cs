@@ -10,9 +10,9 @@ public class Portal : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // 플레이어 태그에만 포탈 작동
-        if (collision.CompareTag("Player"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            // 다음 스테이지 로드
+            // 연결된 콜백을 실행해 다음 방 연결(MapManager.NextStage)
             OnPlayerEnterPortal?.Invoke();
         }
     }
