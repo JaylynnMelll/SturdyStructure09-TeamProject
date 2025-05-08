@@ -17,4 +17,18 @@ public class StatHandler : MonoBehaviour
         get => speed;
         set => speed = Mathf.Clamp(value, 0f, 20f);
     }
+
+    [Range(1, 100)][SerializeField] private int rewardGold = 10;
+    public int RewardGold
+    {
+        get => rewardGold;
+        set => rewardGold = Mathf.Clamp(value, 0, 100);
+    }
+
+    [Range(1, 100)][SerializeField] private int rewardExp = 5;
+    public int RewardExp
+    {
+        get => rewardExp;
+        set => rewardExp = Mathf.Clamp(value, 0, 100);
+    }
 }
