@@ -1,13 +1,14 @@
 using UnityEngine;
+using System.Collections;
 
-public class EnemyController : BaseController
+public class EnemyController : BaseController, IEnemy
 {
     private EnemyManager enemyManager;
     private Transform target;
 
     [SerializeField] private float followRange = 15f;
 
-    public void Init(EnemyManager enemyManager, Transform target)
+    public void InitEnemy(EnemyManager enemyManager, Transform target)
     {
         this.enemyManager = enemyManager;
         this.target = target;
@@ -32,6 +33,7 @@ public class EnemyController : BaseController
         Vector2 direction = DirectionToTarget();
 
         isAttacking = false;
+
         if (distance <= followRange)
         {
             lookDirection = direction;
@@ -40,7 +42,7 @@ public class EnemyController : BaseController
             {
                 int layerMaskTarget = weaponHandler.target;
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, weaponHandler.WeaponRange * 1.5f,
-                    (1 << LayerMask.NameToLayer("Level")) | layerMaskTarget);
+                  (1 << LayerMask.NameToLayer("Level")) | layerMaskTarget);
 
                 if (hit.collider != null && layerMaskTarget == (layerMaskTarget | (1 << hit.collider.gameObject.layer)))
                 {
