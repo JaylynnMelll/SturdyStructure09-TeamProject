@@ -9,35 +9,46 @@ public class EnemyManager : MonoBehaviour
     private GameManager gameManager;
     private EnemyPool enemyPool;
 
+    // ë‚¨ì•„ìˆëŠ” ì ì˜ ìˆ˜
+    public int aliveEnemyCount = 0;
+
     public void Init(GameManager gameManager, EnemyPool enemyPool)
     {
         this.gameManager = gameManager;
         this.enemyPool = enemyPool;
     }
 
-    // ½ºÅ×ÀÌÁö°¡ ÁøÇàµÉ ¶§¸¶´Ù È£ÃâµÇ´Â Àû »ı¼º ¸Ş¼­µå
-    // »ı¼º À§Ä¡, º¸½º ½ºÅ×ÀÌÁöÀÎÁöÀÇ ¿©ºÎ, ½ºÅ×ÀÌÁö ¹øÈ£¸¦ ¹Ş¾Æ¿Â´Ù
+    // ìŠ¤í…Œì´ì§€ê°€ ì§„í–‰ë  ë•Œë§ˆë‹¤ í˜¸ì¶œë˜ëŠ” ì  ìƒì„± ë©”ì„œë“œ
+    // ìƒì„± ìœ„ì¹˜, ë³´ìŠ¤ ìŠ¤í…Œì´ì§€ì¸ì§€ì˜ ì—¬ë¶€, ìŠ¤í…Œì´ì§€ ë²ˆí˜¸ë¥¼ ë°›ì•„ì˜¨ë‹¤
     public void SpawnEnemy(List<Transform> spawnPoints, bool isBossStage, int stageNumber)
     {
         EnemyType enemyType = isBossStage ? EnemyType.Boss : EnemyType.Normal;
 
-        // spawnPoint¿¡ Àû »ı¼º
+        // spawnPointì— ì  ìƒì„±
         foreach (var spawnPoint in spawnPoints)
         {
             Vector3 spawnPos = spawnPoint.position;
             GameObject enemy = enemyPool.GetEnemy(enemyType, spawnPos);
 
-            // ÃÊ±âÈ­
+            // ì´ˆê¸°í™”
             EnemyController enemyController = enemy.GetComponent<EnemyController>();
             enemyController.Init(this, gameManager.player.transform);
 
-            // Ã¼·Â °ø°İ·Â Á¶Á¤ ¿¹Á¤
+            // ë¦¬ì…‹. ìŠ¤í…Œì´ì§€ì— ë§ëŠ” ìƒíƒœë¡œ ë¦¬ì…‹í•œë‹¤
+            enemyController.ResetEnemy(stageNumber);
+
+            aliveEnemyCount++;
         }
+        
     }
 
-    // »ç¸ÁÇÑ ÀûÀ» Ç®¿¡ ¹İÈ¯
+    // ì‚¬ë§í•œ ì ì„ í’€ì— ë°˜í™˜
     public void RemoveEnemyOnDeath(EnemyController enemy)
     {
         enemyPool.ReturnEnemy(enemy.gameObject);
+        aliveEnemyCount--;
     }
+
+    // aliveEnemyCountê°€ 0 ì´í•˜ì¼ ë•Œ trueë¥¼ ë°˜í™˜í•œë‹¤.
+    public bool IsAllEnemyCleared() => aliveEnemyCount <= 0;
 }

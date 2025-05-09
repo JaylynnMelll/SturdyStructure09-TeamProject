@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
         stageManager.Init(enemyManager);
     }
 
-    // ½ºÅ×ÀÌÁö Á¤º¸¿Í Àû ½ºÆùÀ» stageManager¿¡ ¿äÃ»
+    // ìŠ¤í…Œì´ì§€ ì •ë³´ì™€ ì  ìŠ¤í°ì„ stageManagerì— ìš”ì²­
     public void RequestStageLoad(int stageNumber, bool isBossRoom)
     {
         stageManager.LoadRoom(stageNumber);

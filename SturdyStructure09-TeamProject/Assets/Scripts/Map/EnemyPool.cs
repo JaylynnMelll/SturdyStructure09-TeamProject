@@ -3,28 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-// Àû Å¸ÀÔ
+// ì  íƒ€ì…
 public enum EnemyType { Normal, Boss }
 
 public class EnemyPool : MonoBehaviour
 {
-    [Header("ÇÁ¸®ÆÕ ¸ñ·Ï")]
+    [Header("í”„ë¦¬íŒ¹ ëª©ë¡")]
     [SerializeField] private GameObject[] normalEnemies;
     [SerializeField] private GameObject[] bossEnemies;
 
     private Dictionary<GameObject, Queue<GameObject>> enemyPools = new();
 
-    // Àû ²¨³»±â
+    // ì  êº¼ë‚´ê¸°
     public GameObject GetEnemy(EnemyType type, Vector3 spawnPos)
     {
         GameObject[] sourceArray = (type == EnemyType.Normal) ? normalEnemies : bossEnemies;
 
         if (sourceArray.Length == 0)
         {
-            Debug.LogWarning($"EnemyType {type}¿¡ µî·ÏµÈ ÇÁ¸®ÆÕÀÌ ¾ø½À´Ï´Ù.");
+            Debug.LogWarning($"EnemyType {type}ì— ë“±ë¡ëœ í”„ë¦¬íŒ¹ì´ ì—†ìŠµë‹ˆë‹¤.");
             return null;
         }
 
+        // ì •í•´ì§„ íƒ€ì… ë‚´ì—ì„œ ëœë¤ìœ¼ë¡œ êº¼ë‚¸ë‹¤
         GameObject prefab = sourceArray[Random.Range(0, sourceArray.Length)];
 
         if (!enemyPools.ContainsKey(prefab))
@@ -41,6 +42,7 @@ public class EnemyPool : MonoBehaviour
         else
         {
             enemy = Instantiate(prefab);
+            enemy.transform.SetParent(transform);
         }
 
         enemy.transform.position = spawnPos;
@@ -48,7 +50,7 @@ public class EnemyPool : MonoBehaviour
         return enemy;
     }
 
-    // Àû ¹İÈ¯
+    // ì  ë°˜í™˜
     public void ReturnEnemy(GameObject enemy)
     {
         enemy.SetActive(false);
@@ -61,7 +63,7 @@ public class EnemyPool : MonoBehaviour
         }
     }
 
-    // ÀÌ¸§ ±â¹İ ÇÁ¸®ÆÕ Ã£±â
+    // ì´ë¦„ ê¸°ë°˜ í”„ë¦¬íŒ¹ ì°¾ê¸°
     private GameObject FindMatchingPrefab(GameObject enemyInstance)
     {
         foreach (var prefab in normalEnemies.Concat(bossEnemies))

@@ -5,101 +5,108 @@ using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
-    // ¹æµéÀÇ ºÎ¸ğ ¿ªÇÒ, ¹æ Ç®¸µ ´ã´ç, ÇÃ·¹ÀÌ¾î À§Ä¡
+    // ë°©ë“¤ì˜ ë¶€ëª¨ ì—­í• , ë°© í’€ë§ ë‹´ë‹¹, í”Œë ˆì´ì–´ ìœ„ì¹˜
     [SerializeField] private Transform mapParent;
     [SerializeField] private MapPoolManager mapPoolManager;
     [SerializeField] private Transform playerTransform;
 
-    // Æ÷Å» ÇÁ¸®ÆÕ
+    // í¬íƒˆ í”„ë¦¬íŒ¹
     [SerializeField] private Portal portal;
 
-    // ÇöÀç ½ºÅ×ÀÌÁö ¹øÈ£, ÇöÀç È°¼ºÈ­ µÈ ¹æ
+    // í˜„ì¬ ìŠ¤í…Œì´ì§€ ë²ˆí˜¸, í˜„ì¬ í™œì„±í™” ëœ ë°©
     [SerializeField] private int currentStage = 1;
     private GameObject currentRoom;
 
-    // enemy °ü¸®
+    // enemy ê´€ë¦¬
     private EnemyManager enemyManager;
 
-    // ÃÊ±âÈ­
+    // ì´ˆê¸°í™”
     public void Init(EnemyManager enemyManager)
     {
         this.enemyManager = enemyManager;
         LoadRoom(currentStage);
     }
 
-    // ¹æ »ı¼º ¹× ÃÊ±âÈ­
+    // ë°© ìƒì„± ë° ì´ˆê¸°í™”
     public void LoadRoom(int stage)
     {
-        // ÇÃ·¹ÀÌ¾î À§Ä¡ ÃÊ±âÈ­
+        // í”Œë ˆì´ì–´ ìœ„ì¹˜ ì´ˆê¸°í™”
         playerTransform.position = new Vector3(0, -4, 0);
 
-        // ÀÌÀü ¹æÀÌ ÀÖ¾ú´Ù¸é Ç®¿¡ ¹İÈ¯
+        // ì´ì „ ë°©ì´ ìˆì—ˆë‹¤ë©´ í’€ì— ë°˜í™˜
         if (currentRoom != null)
             mapPoolManager.ReturnRoom(currentRoom);
 
-        // º¸½º ¹æÀÎÁö ÆÇ´Ü(5ÀÇ ¹è¼ö)
+        // ë³´ìŠ¤ ë°©ì¸ì§€ íŒë‹¨(5ì˜ ë°°ìˆ˜)
         RoomType type = (stage % 5 == 0) ? RoomType.Boss : RoomType.Normal;
         bool isBoss = type == RoomType.Boss;
 
-        // Ç®¿¡¼­ ¹æ ²¨³¿ (¾øÀ¸¸é »ı¼º)
+        // í’€ì—ì„œ ë°© êº¼ëƒ„ (ì—†ìœ¼ë©´ ìƒì„±)
         currentRoom = mapPoolManager.GetRoom(type);
 
-        // ¹æ À§Ä¡¿Í ºÎ¸ğ ¼³Á¤
+        // ë°© ìœ„ì¹˜ì™€ ë¶€ëª¨ ì„¤ì •
         currentRoom.transform.position = Vector3.zero;
         currentRoom.transform.SetParent(mapParent);
 
-        // enemy ½ºÆùÀ» À§ÇÑ ½ºÆù Æ÷ÀÎÆ® Ã£±â
+        // enemy ìŠ¤í°ì„ ìœ„í•œ ìŠ¤í° í¬ì¸íŠ¸ ì°¾ê¸°
         List<Transform> spawnPoints = new();
 
-        foreach(Transform child in currentRoom.transform)
+        Transform spawnPointsParent = currentRoom.transform.Find("SpawnPoints");
+
+        if(spawnPointsParent != null)
         {
-            if(child.CompareTag("SpawnPoint"))
-                spawnPoints.Add(child);
+            foreach (Transform point in spawnPointsParent)
+            {
+                // ê°œë³„ ìŠ¤í° í¬ì¸íŠ¸ë“¤ ì¶”ê°€
+                spawnPoints.Add(point);
+            }
+
+        }
+        else
+        {
+            Debug.LogWarning("SpawnPoints ì˜¤ë¸Œì íŠ¸ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
         }
 
-        // Àû »ı¼º ¿äÃ»
+        // ì  ìƒì„± ìš”ì²­
         enemyManager.SpawnEnemy(spawnPoints, isBoss, stage);
 
-        // Æ÷Å» ºñÈ°¼ºÈ­
+        // í¬íƒˆ ë¹„í™œì„±í™”
         portal.gameObject.SetActive(false);
 
-        // Å¬¸®¾î Á¶°Ç °¨½Ã ½ÃÀÛ
+        // í´ë¦¬ì–´ ì¡°ê±´ ê°ì‹œ ì‹œì‘
         StartCoroutine(CheckRoomClear());
 
-        // Æ÷Å»¿¡ ´ê¾ÒÀ» ¶§ È£ÃâÇÒ ÇÔ¼ö
+        // í¬íƒˆì— ë‹¿ì•˜ì„ ë•Œ í˜¸ì¶œí•  í•¨ìˆ˜
         portal.OnPlayerEnterPortal = NextStage;
     }
 
-    // 1ÃÊ¸¶´Ù Enemy°¡ ¸ğµÎ »ç¶óÁ³´ÂÁö °¨½ÃÇÏ´Â ÄÚ·çÆ¾
+    // 1ì´ˆë§ˆë‹¤ Enemyê°€ ëª¨ë‘ ì‚¬ë¼ì¡ŒëŠ”ì§€ ê°ì‹œí•˜ëŠ” ì½”ë£¨í‹´
     private IEnumerator CheckRoomClear()
     {
-        while(true)
+        while(!enemyManager.IsAllEnemyCleared())
         {
-            if (GameObject.FindObjectsOfType<EnemyController>().Length == 0)
-                break;
-
             yield return new WaitForSeconds(1f);
         }
 
-        // Å¬¸®¾î ÈÄ Æ÷Å» È°¼ºÈ­
+        // í´ë¦¬ì–´ í›„ í¬íƒˆ í™œì„±í™”
         ActivatePortal();
     }
 
 
-    // Å¬¸®¾î ½Ã Æ÷Å» È°¼ºÈ­
+    // í´ë¦¬ì–´ ì‹œ í¬íƒˆ í™œì„±í™”
     public void ActivatePortal()
     {
         portal.transform.position = new Vector3(0, 4f, 0);
         portal.gameObject.SetActive(true);
     }
 
-    // ´ÙÀ½ ½ºÅ×ÀÌÁö·Î ÀÌµ¿
+    // ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ì´ë™
     private void NextStage()
     {
         currentStage++;
         LoadRoom(currentStage);
     }
 
-    // ÇöÀç ½ºÅ×ÀÌÁö °ª ¹İÈ¯
+    // í˜„ì¬ ìŠ¤í…Œì´ì§€ ê°’ ë°˜í™˜
     public int GetCurrentStage() => currentStage;
 }

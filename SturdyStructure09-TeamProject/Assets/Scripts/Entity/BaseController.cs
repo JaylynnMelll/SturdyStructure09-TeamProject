@@ -153,7 +153,11 @@ public class BaseController : MonoBehaviour
         {
             component.enabled = false;
         }
+    }
 
+    // 사망한 물체를 어떻게 처리할지에 대한 함수
+    protected virtual void OnDeathComplete()
+    {
         Destroy(gameObject, 2f);
     }
 }
