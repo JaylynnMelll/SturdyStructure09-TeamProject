@@ -10,7 +10,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int currentWaveIndex = 0;
 
     private EnemyManager enemyManager;
+    private StageManager stageManager;
     private UIManager uiManager;
+
+    private EnemyPool enemyPool;
 
     public static bool isFirstLoading = true;
 
@@ -26,8 +29,12 @@ public class GameManager : MonoBehaviour
         _playerResourceController.RemoveHealthChangeEvent(uiManager.ChangePlayerHP);
         _playerResourceController.AddHealthChangeEvent(uiManager.ChangePlayerHP);
 
+        enemyPool = FindObjectOfType<EnemyPool>();
+
+        stageManager = FindObjectOfType<StageManager>();
+
         enemyManager = GetComponentInChildren<EnemyManager>();
-        enemyManager.Init(this);
+        enemyManager.Init(this, enemyPool);
     }
 
     private void Start()
@@ -45,24 +52,17 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         uiManager.SetPlayGame();
-        StartNextWave();
+        stageManager.Init(enemyManager);
     }
 
-    void StartNextWave()
+    // 스테이지 정보와 적 스폰을 stageManager에 요청
+    public void RequestStageLoad(int stageNumber, bool isBossRoom)
     {
-        currentWaveIndex += 1;
-        enemyManager.StartWave(1 + currentWaveIndex / 5);
-        uiManager.ChangeWave(currentWaveIndex);
-    }
-
-    public void EndOfWave()
-    {
-        StartNextWave();
+        stageManager.LoadRoom(stageNumber);
     }
 
     public void GameOver()
     {
-        enemyManager.StopWave();
         uiManager.SetGameOver();
     }
 }

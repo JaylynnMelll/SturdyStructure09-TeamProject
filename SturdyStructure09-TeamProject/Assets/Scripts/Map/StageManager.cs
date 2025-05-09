@@ -21,14 +21,9 @@ public class StageManager : MonoBehaviour
     private EnemyManager enemyManager;
 
     // 초기화
-    public void Init()
+    public void Init(EnemyManager enemyManager)
     {
-        LoadRoom(currentStage);
-    }
-
-    // 테스트용 awake
-    private void Awake()
-    {
+        this.enemyManager = enemyManager;
         LoadRoom(currentStage);
     }
 
@@ -36,7 +31,7 @@ public class StageManager : MonoBehaviour
     public void LoadRoom(int stage)
     {
         // 플레이어 위치 초기화
-        playerTransform.position = Vector3.down;
+        playerTransform.position = new Vector3(0, -4, 0);
 
         // 이전 방이 있었다면 풀에 반환
         if (currentRoom != null)
@@ -44,6 +39,7 @@ public class StageManager : MonoBehaviour
 
         // 보스 방인지 판단(5의 배수)
         RoomType type = (stage % 5 == 0) ? RoomType.Boss : RoomType.Normal;
+        bool isBoss = type == RoomType.Boss;
 
         // 풀에서 방 꺼냄 (없으면 생성)
         currentRoom = mapPoolManager.GetRoom(type);
@@ -53,33 +49,19 @@ public class StageManager : MonoBehaviour
         currentRoom.transform.SetParent(mapParent);
 
         // enemy 스폰을 위한 스폰 포인트 찾기
-        Transform spawnRoot = currentRoom.transform.Find("SpawnPoints");
+        List<Transform> spawnPoints = new();
 
-        if(spawnRoot != null)
+        foreach(Transform child in currentRoom.transform)
         {
-            List<Transform> spawnPoints = new();
-
-            foreach (Transform point in spawnRoot)
-                spawnPoints.Add(point);
-
-            // enemy 스폰 요청
-            // EnemyManager가 풀링 시스템을 통해 적 생성
-            // enemyManager.SpawnEnemies(spawnPoints, stage)
+            if(child.CompareTag("SpawnPoint"))
+                spawnPoints.Add(child);
         }
 
-        else
-        {
-            Debug.LogWarning("SpawnPoints가 없습니다.");
-        }
+        // 적 생성 요청
+        enemyManager.SpawnEnemy(spawnPoints, isBoss, stage);
 
-            // enemy에게 현재 스테이지 정보 전달
-            //foreach(var enemy in currentRoom.GetComponentInChildren<EnemyController>())
-            //{
-            //    enemy.Init(stage);
-            //}
-
-            // 포탈 비활성화
-            portal.gameObject.SetActive(false);
+        // 포탈 비활성화
+        portal.gameObject.SetActive(false);
 
         // 클리어 조건 감시 시작
         StartCoroutine(CheckRoomClear());
