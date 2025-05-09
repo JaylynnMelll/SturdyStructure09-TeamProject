@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6358263627384955903}
   - component: {fileID: 2864783522489194586}
   m_Layer: 0
-  m_Name: 'E_Axe_EquipWeapon '
+  m_Name: P_Golden_sword_EquipWeapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,7 +52,7 @@ MonoBehaviour:
   weaponRange: 1.2
   target:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 128
   isOnKnockback: 0
   knockbackPower: 0.1
   knockbackTime: 0.5
@@ -132,7 +132,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 120
-  m_Sprite: {fileID: 21300000, guid: e8e8f62540e6e1740a0577a26e58b896, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7e597e648094e8e43911ba043005f7d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
