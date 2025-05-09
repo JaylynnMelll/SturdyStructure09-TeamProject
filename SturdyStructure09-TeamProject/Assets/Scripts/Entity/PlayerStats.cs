@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
     public static PlayerStats Instance;
+    public int MaxHP { get; private set; } = 100;
+    public int CurrentHP { get; private set; }
 
     public int Gold { get; private set; }
     public int Exp { get; private set; }
@@ -14,11 +16,13 @@ public class PlayerStats : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        CurrentHP = MaxHP;
     }
 
     public void AddGold(int amount)
     {
         Gold += amount;
+        GameManager.instance.UpdateGold();
     }
 
     public void AddExp(int amount)
