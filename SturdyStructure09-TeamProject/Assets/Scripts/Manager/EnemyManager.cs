@@ -17,7 +17,7 @@ public class EnemyManager : MonoBehaviour
     [SerializeField]
     private Color gizmoColor = new Color(1, 0, 0, 0.3f); // 기즈모 색상
 
-    private List<EnemyController> activeEnemies = new List<EnemyController>(); // 현재 활성화된 적들
+    private List<IEnemy> activeEnemies = new List<IEnemy>(); // 현재 활성화된 적들
 
     private bool enemySpawnComplete;
 
@@ -78,18 +78,25 @@ public class EnemyManager : MonoBehaviour
 
         // Rect 영역 내부의 랜덤 위치 계산
         Vector2 randomPosition = new Vector2(
-      Random.Range(randomArea.xMin, randomArea.xMax),
-      Random.Range(randomArea.yMin, randomArea.yMax)
+        Random.Range(randomArea.xMin, randomArea.xMax),
+        Random.Range(randomArea.yMin, randomArea.yMax)
     );
 
         // 적 생성 및 리스트에 추가
         GameObject spawnedEnemy = Instantiate(randomPrefab, new Vector3(randomPosition.x, randomPosition.y), Quaternion.identity);
-        EnemyController enemyController = spawnedEnemy.GetComponent<EnemyController>();
-        enemyController.Init(this, gameManager.player.transform);
-
-        activeEnemies.Add(enemyController);
+        
+        IEnemy enemy = spawnedEnemy.GetComponent<IEnemy>();
+        if (enemy != null )
+        {
+            enemy.InitEnemy(this, gameManager.player.transform);
+            activeEnemies.Add(enemy);
+        }
+        else
+        {
+            Debug.Log("이 프리팹은 IEnemy 인터페이스가 없습니다." + spawnedEnemy.name);
+        }
     }
-    public void RemoveEnemyOnDeath(EnemyController enemy)
+    public void RemoveEnemyOnDeath(IEnemy enemy)
     {
         activeEnemies.Remove(enemy);
         if (enemySpawnComplete && activeEnemies.Count == 0)

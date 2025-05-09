@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlimeBossController : BaseController
+public class SlimeBossController : BaseController, IEnemy
 
 {
 
@@ -24,9 +24,15 @@ public class SlimeBossController : BaseController
     private LineRenderer lineRenderer;
     private Animator animator;
 
+    public void InitEnemy(EnemyManager manager, Transform player)
+    {
+        target = player;
+        StartCoroutine(ChargeRoutine());
+    }
     protected override void Awake()
     {
         base.Awake();
+        _rigidbody = GetComponent<Rigidbody2D>();
         resourceController = GetComponent<ResourceController>();
         lineRenderer = GetComponent<LineRenderer>();
         animator = GetComponent<Animator>();
@@ -40,12 +46,12 @@ public class SlimeBossController : BaseController
         }
     }
 
-    protected override void Start()
+    protected override void FixedUpdate()
     {
-        base.Start();
-        target = GameObject.FindWithTag("Player")?.transform;
-        StartCoroutine(ChargeRoutine());
+        if (isCharging) return;
+        base.FixedUpdate();
     }
+
 
     public override void Died()
     {
@@ -76,7 +82,12 @@ public class SlimeBossController : BaseController
             GameObject split = Instantiate(bossSlimeSplit, spawnPos, Quaternion.identity);
 
             SlimeBossController splitcontroller = split.GetComponent<SlimeBossController>();
-            splitcontroller.InitSplit(splitCount + 1);
+            if (splitcontroller != null)
+            {
+                // EnemyManager와 플레이어 Transform을 전달하여 초기화
+                splitcontroller.InitEnemy(GetComponentInParent<EnemyManager>(), FindObjectOfType<GameManager>().player.transform);
+                splitcontroller.InitSplit(splitCount + 1);
+            }
         }
 
         Destroy(gameObject); // 분열 전 슬라임 제거
@@ -91,11 +102,14 @@ public class SlimeBossController : BaseController
         resourceController.SetHealth(statHandler.Health);
 
         // 크기 줄이기
-        float splitScale = Mathf.Max(0.3f, 1f - newSplitCount * 0.2f);
+        float splitScale = Mathf.Max(1f, 5f - newSplitCount);
         transform.localScale = new Vector3(splitScale, splitScale, 1f);
 
         // 이동속도 증가
         statHandler.Speed += 0.5f;
+
+        // 분열 이후 돌진패턴 시작
+        StartCoroutine(ChargeRoutine());
 
     }
 
@@ -158,7 +172,7 @@ public class SlimeBossController : BaseController
             var playerResource = collision.collider.GetComponent<ResourceController>();
             if (playerResource != null)
             {
-                playerResource.ChangeHealth(-10f); // 충돌 시 데미지
+                playerResource.ChangeHealth(-1f); // 충돌 시 데미지
             }
         }
     }

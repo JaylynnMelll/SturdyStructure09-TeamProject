@@ -26,6 +26,8 @@ public class ResourceController : MonoBehaviour
         baseController = GetComponent<BaseController>();
         statHandler = GetComponent<StatHandler>();
         animationHandler = GetComponent<AnimationHandler>();
+        slimeBossController = GetComponent<SlimeBossController>();
+        enemyController = GetComponent<EnemyController>();
     }
 
     private void Start()

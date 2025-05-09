@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 4833979209309103227}
   m_Layer: 7
   m_Name: Boss_Slime
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b04f5d3d4ecb6444bbaedf0bc0774b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 6
+  health: 50
   speed: 1
   rewardGold: 100
   rewardExp: 100
@@ -185,6 +185,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf2d27161fef3c46b76e2a9a57d878b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterRenderer: {fileID: 4741099087656259778}
+  weaponPivot: {fileID: 3387041767763990095}
+  WeaponPrefab: {fileID: 0}
   bossSlimeSplit: {fileID: 1853731775948942785}
   bossSlimeSplitEffect: {fileID: 0}
   maxSplitCount: 4
