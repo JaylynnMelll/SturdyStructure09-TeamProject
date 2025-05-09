@@ -29,6 +29,7 @@ public class RangeWeaponHandler : WeaponHandler
     public Color ProjectileColor { get { return projectileColor; } }
 
     private ProjectileManager projectileManager;
+
     protected override void Start()
     {
         base.Start();

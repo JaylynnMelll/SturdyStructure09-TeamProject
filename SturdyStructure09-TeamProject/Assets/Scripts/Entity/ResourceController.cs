@@ -19,7 +19,9 @@ public class ResourceController : MonoBehaviour
     public float MaxHealth => statHandler.Health;
 
     private SlimeBossController slimeBossController;
+    private NecromancerBossController necromancerBossController;
     private EnemyController enemyController;
+    private PlayerController playerController;
 
     private void Awake()
     {
@@ -27,7 +29,9 @@ public class ResourceController : MonoBehaviour
         statHandler = GetComponent<StatHandler>();
         animationHandler = GetComponent<AnimationHandler>();
         slimeBossController = GetComponent<SlimeBossController>();
+        necromancerBossController = GetComponent<NecromancerBossController>();
         enemyController = GetComponent<EnemyController>();
+        playerController = GetComponent<PlayerController>();
     }
 
     private void Start()
@@ -100,7 +104,15 @@ public class ResourceController : MonoBehaviour
         {
             slimeBossController.Died();
         }
+        else if(necromancerBossController != null)
+        {
+            necromancerBossController.Died();
+        }
         else if (enemyController != null)
+        {
+            baseController?.Died();
+        }
+        else if (playerController != null)
         {
             baseController?.Died();
         }
