@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,23 +9,23 @@ public class EnemyManager : MonoBehaviour
     private Coroutine waveRoutine;
 
     [SerializeField]
-    private List<GameObject> enemyPrefabs; // »ı¼ºÇÒ Àû ÇÁ¸®ÆÕ ¸®½ºÆ®
+    private List<GameObject> enemyPrefabs; // ìƒì„±í•  ì  í”„ë¦¬íŒ¹ ë¦¬ìŠ¤íŠ¸
 
-    [SerializeField]
-    private List<Rect> spawnAreas; // ÀûÀ» »ı¼ºÇÒ ¿µ¿ª ¸®½ºÆ®
+Â  Â  [SerializeField]
+    private List<Rect> spawnAreas; // ì ì„ ìƒì„±í•  ì˜ì—­ ë¦¬ìŠ¤íŠ¸
 
-    [SerializeField]
-    private Color gizmoColor = new Color(1, 0, 0, 0.3f); // ±âÁî¸ğ »ö»ó
+Â  Â  [SerializeField]
+    private Color gizmoColor = new Color(1, 0, 0, 0.3f); // ê¸°ì¦ˆëª¨ ìƒ‰ìƒ
 
-    private List<EnemyController> activeEnemies = new List<EnemyController>(); // ÇöÀç È°¼ºÈ­µÈ Àûµé
+Â  Â  private List<IEnemy> activeEnemies = new List<IEnemy>(); // í˜„ì¬ í™œì„±í™”ëœ ì ë“¤
 
-    private bool enemySpawnComplete;
+Â  Â  private bool enemySpawnComplete;
 
     [SerializeField] private float timeBetweenSpawns = 0.2f;
     [SerializeField] private float timeBetweenWaves = 1f;
 
     GameManager gameManager;
-    
+
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
@@ -66,38 +66,45 @@ public class EnemyManager : MonoBehaviour
     {
         if (enemyPrefabs.Count == 0 || spawnAreas.Count == 0)
         {
-            Debug.LogWarning("Enemy Prefabs ¶Ç´Â Spawn Areas°¡ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.LogWarning("Enemy Prefabs ë˜ëŠ” Spawn Areasê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
             return;
         }
 
-        // ·£´ıÇÑ Àû ÇÁ¸®ÆÕ ¼±ÅÃ
-        GameObject randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
+Â  Â  Â  Â  // ëœë¤í•œ ì  í”„ë¦¬íŒ¹ ì„ íƒ
+Â  Â  Â  Â  GameObject randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
 
-        // ·£´ıÇÑ ¿µ¿ª ¼±ÅÃ
-        Rect randomArea = spawnAreas[Random.Range(0, spawnAreas.Count)];
+Â  Â  Â  Â  // ëœë¤í•œ ì˜ì—­ ì„ íƒ
+Â  Â  Â  Â  Rect randomArea = spawnAreas[Random.Range(0, spawnAreas.Count)];
 
-        // Rect ¿µ¿ª ³»ºÎÀÇ ·£´ı À§Ä¡ °è»ê
-        Vector2 randomPosition = new Vector2(
-            Random.Range(randomArea.xMin, randomArea.xMax),
-            Random.Range(randomArea.yMin, randomArea.yMax)
-        );
+Â  Â  Â  Â  // Rect ì˜ì—­ ë‚´ë¶€ì˜ ëœë¤ ìœ„ì¹˜ ê³„ì‚°
+Â  Â  Â  Â  Vector2 randomPosition = new Vector2(
+        Random.Range(randomArea.xMin, randomArea.xMax),
+        Random.Range(randomArea.yMin, randomArea.yMax)
+    );
 
-        // Àû »ı¼º ¹× ¸®½ºÆ®¿¡ Ãß°¡
-        GameObject spawnedEnemy = Instantiate(randomPrefab, new Vector3(randomPosition.x, randomPosition.y), Quaternion.identity);
-        EnemyController enemyController = spawnedEnemy.GetComponent<EnemyController>();
-        enemyController.Init(this, gameManager.player.transform);
-
-        activeEnemies.Add(enemyController);
+Â  Â  Â  Â  // ì  ìƒì„± ë° ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
+Â  Â  Â  Â  GameObject spawnedEnemy = Instantiate(randomPrefab, new Vector3(randomPosition.x, randomPosition.y), Quaternion.identity);
+        
+        IEnemy enemy = spawnedEnemy.GetComponent<IEnemy>();
+        if (enemy != null )
+        {
+            enemy.InitEnemy(this, gameManager.player.transform);
+            activeEnemies.Add(enemy);
+        }
+        else
+        {
+            Debug.Log("ì´ í”„ë¦¬íŒ¹ì€ IEnemy ì¸í„°í˜ì´ìŠ¤ê°€ ì—†ìŠµë‹ˆë‹¤." + spawnedEnemy.name);
+        }
     }
-    public void RemoveEnemyOnDeath(EnemyController enemy)
+    public void RemoveEnemyOnDeath(IEnemy enemy)
     {
         activeEnemies.Remove(enemy);
         if (enemySpawnComplete && activeEnemies.Count == 0)
             gameManager.EndOfWave();
     }
 
-    // ±âÁî¸ğ¸¦ ±×·Á ¿µ¿ªÀ» ½Ã°¢È­ (¼±ÅÃµÈ °æ¿ì¿¡¸¸ Ç¥½Ã)
-    private void OnDrawGizmosSelected()
+Â  Â  // ê¸°ì¦ˆëª¨ë¥¼ ê·¸ë ¤ ì˜ì—­ì„ ì‹œê°í™” (ì„ íƒëœ ê²½ìš°ì—ë§Œ í‘œì‹œ)
+Â  Â  private void OnDrawGizmosSelected()
     {
         if (spawnAreas == null) return;
 
@@ -108,5 +115,5 @@ public class EnemyManager : MonoBehaviour
             Vector3 size = new Vector3(area.width, area.height);
             Gizmos.DrawCube(center, size);
         }
-    }  
+    }
 }
