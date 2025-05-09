@@ -27,6 +27,13 @@ public class BaseController : MonoBehaviour
     protected bool isAttacking;
     private float timeSinceLastAttack = 0.0f;
 
+    // 리셋 작업을 위한 초기 상태 저장
+    private Vector2 initialMovementDirection = Vector2.zero;  // 초기 이동 방향
+    private Vector2 initialLookDirection = Vector2.right;     // 초기 시선 방향
+    private bool initialIsAttacking = false;                   // 초기 공격 상태
+    private float initialHealth;                               // 초기 체력
+    private float initialKnockbackDuration = 0f;               // 초기 넉백 지속 시간
+
     // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     protected virtual void Awake()
@@ -34,6 +41,8 @@ public class BaseController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         animationHandler = GetComponent<AnimationHandler>();
         statHandler = GetComponent<StatHandler>();
+
+        Initialize();
 
         if (WeaponPrefab != null)
         {
@@ -43,6 +52,17 @@ public class BaseController : MonoBehaviour
         {
             weaponHandler = GetComponentInChildren<WeaponHandler>();
         }
+    }
+
+    // 적이 태어날 때 호출 (혹은 처음 초기화되는 곳에서 설정)
+    public void Initialize()
+    {
+        // 초기 상태 값 설정
+        initialMovementDirection = Vector2.zero;  // 초기 방향은 0,0 (움직이지 않음)
+        initialLookDirection = Vector2.right;     // 기본적으로 오른쪽을 향함
+        initialIsAttacking = false;               // 초기에는 공격하지 않음
+        initialHealth = statHandler.Health;       // 초기 체력은 현재 체력으로 설정
+        initialKnockbackDuration = 0f;            // 넉백 상태 없음
     }
 
     protected virtual void Start()
@@ -153,6 +173,35 @@ public class BaseController : MonoBehaviour
         {
             component.enabled = false;
         }
+    }
+
+    // 리셋 함수
+    public virtual void Reset()
+    {
+        // 초기 상태로 복원
+        movementDirection = initialMovementDirection;
+        lookDirection = initialLookDirection;
+        isAttacking = initialIsAttacking;
+        statHandler.Health = (int)initialHealth;
+        knockbackDuration = initialKnockbackDuration;
+
+        // Rigidbody 초기화: 초기 이동 방향으로 설정
+        _rigidbody.velocity = movementDirection * statHandler.Speed;
+
+        // SpriteRenderer 복원 (불투명으로 설정)
+        foreach (SpriteRenderer renderer in transform.GetComponentsInChildren<SpriteRenderer>())
+        {
+            Color color = renderer.color;
+            color.a = 1f;  // 불투명
+            renderer.color = color;
+        }
+
+        // 모든 Behaviour 컴포넌트를 활성화
+        foreach (Behaviour component in transform.GetComponentsInChildren<Behaviour>())
+        {
+            component.enabled = true;
+        }
+
     }
 
     // 사망한 물체를 어떻게 처리할지에 대한 함수

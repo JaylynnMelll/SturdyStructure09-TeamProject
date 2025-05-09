@@ -66,4 +66,9 @@ public class EnemyController : BaseController
         base.Died();
         enemyManager.RemoveEnemyOnDeath(this);
     }
+
+    public override void Reset()
+    {
+        base.Reset();
+    }
 }

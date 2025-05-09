@@ -35,6 +35,8 @@ public class EnemyManager : MonoBehaviour
             enemyController.Init(this, gameManager.player.transform);
 
             aliveEnemyCount++;
+
+            enemyController.Reset();
         }
         
     }
