@@ -15,7 +15,8 @@ public class ResourceController : MonoBehaviour
 
     private float timeSinceLastHealthChange = float.MaxValue;
 
-    public float CurrentHealth { get; private set; }
+    public float CurrentHealth { get; set; }
+
     public float MaxHealth => statHandler.Health;
 
     private void Awake()

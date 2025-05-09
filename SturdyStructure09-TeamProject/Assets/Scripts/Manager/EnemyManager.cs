@@ -36,7 +36,7 @@ public class EnemyManager : MonoBehaviour
 
             aliveEnemyCount++;
 
-            enemyController.Reset();
+            enemyController.Reset(); 
         }
         
     }
