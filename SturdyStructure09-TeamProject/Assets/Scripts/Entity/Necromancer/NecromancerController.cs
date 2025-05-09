@@ -58,7 +58,6 @@ public class NecromancerBossController : BaseController, IEnemy
 
             if (rangeWeaponHandler != null)
             {
-                // 보스가 플레이어를 바라보게
                 if (target != null)
                 {
                     lookDirection = (target.position - transform.position).normalized;
@@ -162,7 +161,6 @@ public class NecromancerBossController : BaseController, IEnemy
             if (isPhaseTwo && shockwaveEffectPrefab != null)
             {
                 Instantiate(shockwaveEffectPrefab, transform.position, Quaternion.identity);
-                // Optional: Add AOE damage here
                 Debug.Log("충격파 발동");
             }
         }
