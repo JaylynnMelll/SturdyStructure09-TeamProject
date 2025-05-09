@@ -34,9 +34,6 @@ public class EnemyManager : MonoBehaviour
             EnemyController enemyController = enemy.GetComponent<EnemyController>();
             enemyController.Init(this, gameManager.player.transform);
 
-            // 리셋. 스테이지에 맞는 상태로 리셋한다
-            enemyController.ResetEnemy(stageNumber);
-
             aliveEnemyCount++;
         }
         
