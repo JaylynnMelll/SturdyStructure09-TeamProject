@@ -794,10 +794,17 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
+<<<<<<< Updated upstream
   cloudProjectId: 13b1ab9f-94ed-4dc6-a3a5-c43bafc5f6e3
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: SturdyStructure09-TeamProject
+=======
+  cloudProjectId: b3973236-99d6-468a-af40-35cfe8aee04a
+  framebufferDepthMemorylessMode: 0
+  qualitySettingsNames: []
+  projectName: SturdyStructure09-TeamProject 2025-05-09_13-30-56
+>>>>>>> Stashed changes
   organizationId: epahslr666
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
