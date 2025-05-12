@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
+    // 임시 싱글톤 처리
+    public static StageManager instance;
+
     // 방들의 부모 역할, 방 풀링 담당, 플레이어 위치
     [SerializeField] private Transform mapParent;
     [SerializeField] private MapPoolManager mapPoolManager;
@@ -14,11 +17,19 @@ public class StageManager : MonoBehaviour
     [SerializeField] private Portal portal;
 
     // 현재 스테이지 번호, 현재 활성화 된 방
-    [SerializeField] private int currentStage = 1;
+    [SerializeField] public int currentStage = 1;
     private GameObject currentRoom;
 
     // enemy 관리
     private EnemyManager enemyManager;
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+    }
 
     // 초기화
     public void Init(EnemyManager enemyManager)
@@ -30,8 +41,16 @@ public class StageManager : MonoBehaviour
     // 방 생성 및 초기화
     public void LoadRoom(int stage)
     {
-        // 플레이어 위치 초기화
-        playerTransform.position = new Vector3(0, -4, 0);
+        // 플레이어 위치 초기화. 보스룸이냐 아니냐에 따라 변화
+        if (currentStage % 5 == 0)
+        {
+            playerTransform.position = new Vector3(0, -6f, 0);
+        }
+
+        else
+        {
+            playerTransform.position = new Vector3(0, -4f, 0);
+        }
 
         // 이전 방이 있었다면 풀에 반환
         if (currentRoom != null)
@@ -96,7 +115,15 @@ public class StageManager : MonoBehaviour
     // 클리어 시 포탈 활성화
     public void ActivatePortal()
     {
-        portal.transform.position = new Vector3(0, 4f, 0);
+        // 보스룸이냐 아니냐에 따라 포탈 크기 변화
+        if(currentStage % 5 == 0)
+        {
+            portal.transform.position = new Vector3(0, 8f, 0);
+        }
+        else
+        {
+            portal.transform.position = new Vector3(0, 4f, 0);
+        }
         portal.gameObject.SetActive(true);
     }
 
